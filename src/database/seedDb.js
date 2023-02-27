@@ -35,20 +35,22 @@ const seedMuseumsDb = async () => {
         museumInsertQuery += string + ')'
         if (index < array.length - 1) museumInsertQuery += ','
   
-
+        
   const variables = [
+    museum.id,
     museum.name,
     museum.adress,
     museum.zipcode,
     museum.city,
     museum.fee,
+
   ]
-  //museumInsertQueryVariables = [...museumInsertQueryVariables, ...variables]
+  museumInsertQueryVariables = [...museumInsertQueryVariables, ...variables]
 })
 museumInsertQuery += ';'
 
 await sequelize.query(museumInsertQuery, {
-  //bind: museumInsertQueryVariables,
+  bind: museumInsertQueryVariables,
 })
 
 const [museumsRes, metadata] = await sequelize.query('SELECT name, id FROM museum')
@@ -58,6 +60,7 @@ console.log('Database successfully populated with data...')
     console.error(error)
   } finally {
     // End Node process
+    
     process.exit(0)
   }
 }
