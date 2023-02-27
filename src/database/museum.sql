@@ -15,7 +15,7 @@ Ref: "museum"."id" < "review"."id"
 
 Table user {
   id int [pk, increment]
-  full_name text
+  username text
   password text
   email email
   role user_role
