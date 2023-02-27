@@ -1,7 +1,7 @@
 require("dotenv").config();
 require("express-async-errors");
 const express = require("express");
-const apiRoutes = require("./routes");
+const apiRoutes = require("./routes/authRoutes");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 const { notFoundMiddleware } = require("./middleware/notFoundMiddleware");
 
@@ -26,7 +26,7 @@ app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
 // Server Setup
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 const run = async () => {
   try {
     await sequelize.authenticate();
@@ -34,7 +34,7 @@ const run = async () => {
     app.listen(port, () => {
       console.log(
         `Server is listening on ${
-          process.env.NODE_ENV === "development" ? "http://localhost:" : "port "
+          process.env.NODE_ENV === "development" ? "http://localhost:" : "PORT "
         }${port}`
       );
     });
