@@ -8,7 +8,7 @@ const { userRoles } = require("../constants/users");
 exports.register = async (req, res) => {
   // Place desired username, email and password into local variables
   const { user_name, password, email } = req.body;
-
+  console.log(req.body);
   // Encrypt the desired password
   const salt = await bcrypt.genSalt(10);
   const hashedpassword = await bcrypt.hash(password, salt);
@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
   } else {
     // prettier-ignore
     await sequelize.query(
-			'INSERT INTO users (user_name, password, email, role ) VALUES ($user_name, $password, $email, "user")', 
+			'INSERT INTO user (user_name, password, email, role ) VALUES ($user_name, $password, $email, "user")', 
 			{
 				bind: {
           user_name: user_name,
@@ -58,7 +58,7 @@ exports.login = async (req, res) => {
   // Check if user with that email exits in db
   // prettier-ignore
   const [user, metadata] = await sequelize.query(
-		'SELECT * FROM users WHERE email = $email LIMIT 1;', {
+		'SELECT * FROM user WHERE email = $email LIMIT 1;', {
 		bind: { email },
 		type: QueryTypes.SELECT
 	})

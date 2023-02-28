@@ -10,7 +10,7 @@ class CustomAPIError extends Error {
   }
 }
 
-class notFoundError extends CustomAPIError {
+class NotFoundError extends CustomAPIError {
   constructor(message) {
     super(message);
     this.statusCode = 404;
@@ -50,7 +50,7 @@ class UnauthorizedError extends CustomAPIError {
 
 module.exports = {
   CustomAPIError,
-  notFoundError,
+  NotFoundError,
   BadRequestError,
   ValidationError,
   UnauthorizedError,
