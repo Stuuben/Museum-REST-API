@@ -4,6 +4,7 @@ const express = require("express");
 const apiRoutes = require("./routes/authRoutes");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 const { notFoundMiddleware } = require("./middleware/notFoundMiddleware");
+const { authController } = require("./controllers/authController");
 
 const { sequelize } = require("./database/config");
 
