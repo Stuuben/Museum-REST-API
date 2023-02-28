@@ -35,7 +35,7 @@ const run = async () => {
     app.listen(port, () => {
       console.log(
         `Server is listening on ${
-          process.env.NODE_ENV === "development" ? "http://localhost:" : "PORT "
+          process.env.NODE_ENV === "development" ? "http://localhost:" : "PORT"
         }${port}`
       );
     });

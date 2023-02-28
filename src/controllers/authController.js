@@ -1,36 +1,49 @@
-const { BadRequestError, UnauthenticatedError } = require("../utils/error");
+const { UnauthenticatedError, UnauthorizedError } = require("../utils/error");
 const bcrypt = require("bcrypt");
-const User = require("../models/User");
-const { userRoles } = require("../constants/users");
 const jwt = require("jsonwebtoken");
+const { sequelize } = require("../database/config");
+const { QueryTypes } = require("sequelize");
+const { userRoles } = require("../constants/users");
 
 exports.register = async (req, res) => {
   // Place desired username, email and password into local variables
-  const { username, password, email } = req.body;
-
-  // Validate that the needed information was sent in
-  if (!username || !password || !email) {
-    throw new BadRequestError(
-      "You must provide a username, email and password in order to register"
-    );
-  }
+  const { user_name, password, email } = req.body;
 
   // Encrypt the desired password
   const salt = await bcrypt.genSalt(10);
   const hashedpassword = await bcrypt.hash(password, salt);
 
-  const newUser = {
-    username,
-    email,
-    password: hashedpassword,
-  };
+  // Check if there are users in the database
+  const [results, metadata] = await sequelize.query(
+    "SELECT id FROM user LIMIT 1"
+  );
 
-  // If first user ever make them an admin (for demo purposes)
-  const usersInDb = await User.countDocuments();
-  if (usersInDb === 0) newUser.role = userRoles.ADMIN;
-
-  // Add the new user to database
-  await User.create(newUser);
+  // Add user to database (make admin if first user)
+  if (!results || results.length < 1) {
+    // prettier-ignore
+    await sequelize.query(
+			'INSERT INTO user ( user_name, password, email, role ) VALUES ($user_name, $password, $email, "admin")', 
+			{
+				bind: {
+          user_name: user_name,
+					password: hashedpassword,
+					email: email
+				}
+			}
+		)
+  } else {
+    // prettier-ignore
+    await sequelize.query(
+			'INSERT INTO users (user_name, password, email, role ) VALUES ($user_name, $password, $email, "user")', 
+			{
+				bind: {
+          user_name: user_name,
+					password: hashedpassword,
+					email: email,
+				},
+			}
+		)
+  }
 
   // Request response
   return res.status(201).json({
@@ -42,36 +55,38 @@ exports.login = async (req, res) => {
   // Place candidate email and password into local variables
   const { email, password: canditatePassword } = req.body;
 
-  // Validate that the needed information was sent in
-  if (!email || !canditatePassword) {
-    throw new BadRequestError(
-      "You must provide an email and password in order to log in"
-    );
-  }
-
   // Check if user with that email exits in db
-  const user = await User.findOne({ email: email });
+  // prettier-ignore
+  const [user, metadata] = await sequelize.query(
+		'SELECT * FROM users WHERE email = $email LIMIT 1;', {
+		bind: { email },
+		type: QueryTypes.SELECT
+	})
+
+  console.log(user);
 
   if (!user) throw new UnauthenticatedError("Invalid Credentials");
 
-  // Check if password is corrrect
+  // Check if password is correct
+  // @ts-ignore
   const isPasswordCorrect = await bcrypt.compare(
     canditatePassword,
     user.password
   );
-
   if (!isPasswordCorrect) throw new UnauthenticatedError("Invalid Credentials");
 
   // Create JWT payload (aka JWT contents)
   const jwtPayload = {
-    userId: user._id,
-    role: user.role,
-    username: user.username,
+    // @ts-ignore
+    userId: user.id,
+    // @ts-ignore
+    email: user.email,
+    role: user["is_admin"] === 1 ? userRoles.ADMIN : userRoles.USER,
   };
 
   // Create the JWT token
   const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
-    expiresIn: "1d" /* 2h */,
+    expiresIn: "1h" /* 1d */,
   });
 
   // Return the token

@@ -25,9 +25,34 @@ class BadRequestError extends CustomAPIError {
     this.name = "BadRequest";
   }
 }
+class ValidationError extends BadRequestError {
+  constructor(message, validationErrors) {
+    super(message);
+    this.validationErrors = validationErrors;
+  }
+}
+
+class UnauthenticatedError extends CustomAPIError {
+  constructor(message) {
+    super(message);
+    this.statusCode = 401;
+    this.name = "UnauthenticatedError";
+  }
+}
+
+class UnauthorizedError extends CustomAPIError {
+  constructor(message) {
+    super(message);
+    this.statusCode = 403;
+    this.name = "UnauthorizedError";
+  }
+}
 
 module.exports = {
   CustomAPIError,
   notFoundError,
   BadRequestError,
+  ValidationError,
+  UnauthorizedError,
+  UnauthenticatedError,
 };
