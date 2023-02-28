@@ -2,6 +2,7 @@ require("dotenv").config();
 require("express-async-errors");
 const express = require("express");
 const apiRoutes = require("./routes/authRoutes");
+const cityRoutes = require("./routes/cityRoutes");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 const { notFoundMiddleware } = require("./middleware/notFoundMiddleware");
 const { authController } = require("./controllers/authController");
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 
 // API Routes
 app.use("/api/v1", apiRoutes);
+app.use("/api/v1", cityRoutes);
 
 // Error Handling
 app.use(notFoundMiddleware);
