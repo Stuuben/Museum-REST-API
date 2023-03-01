@@ -59,13 +59,15 @@ const seedMuseumsDb = async () => {
     //USERS KOPPLA OWNERS TILL MUSEUM!
     await sequelize.query(`
     INSERT INTO user (user_name, password, email, role) VALUES 
-    ("admin", "password123", "admin@admin.com", "admin"), 
-    ("user1", "password123", "user1@user.com", "user"), 
+    ("admin", "password123", "admin@admin.com", "admin")
+
+    `);
+
+    /* ("user1", "password123", "user1@user.com", "user"), 
     ("user2", "password123", "user2@user.com", "user"), 
     ("owner_stockholm", "password123", "owner_stockholm@owner.com", "owner"),
     ("owner_göteborg", "password123", "owner_göteborg@owner.com", "owner"),
-    ("owner_malmö", "password123", "owner_malmö@owner.com", "owner")
-    `);
+    ("owner_malmö", "password123", "owner_malmö@owner.com", "owner") */
 
     ///// CITY///////
     await sequelize.query(`
@@ -90,7 +92,7 @@ const seedMuseumsDb = async () => {
     //REVIEWS
     await sequelize.query(`
     INSERT INTO review (comment, grade, fk_user_id, fk_museum_id) VALUES 
-    ("Bästa museet i stan!", 5, (SELECT id FROM user WHERE email = "user1@user.com" ), (SELECT id FROM museum WHERE name = "Vasamuseet"))
+    ("Bästa museet i stan!", 5, (SELECT id FROM user WHERE email = "admin@admin.com" ), (SELECT id FROM museum WHERE name = "Vasamuseet"))
     `);
 
     console.log("Database successfully populated with data...");

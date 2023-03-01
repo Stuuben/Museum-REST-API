@@ -3,7 +3,7 @@ const { userRoles } = require("../constants/users");
 const {
   getAllUsers,
   getUserById,
-  deleteUser,
+  deleteUserById,
 } = require("../controllers/userController");
 const {
   isAuthenticated,
@@ -11,8 +11,23 @@ const {
 } = require("../middleware/authenticationMiddleware");
 const router = express.Router();
 
-router.get("/", isAuthenticated, authorizeRoles(userRoles.ADMIN), getAllUsers);
-router.get("/:userId", isAuthenticated, getUserById);
-router.delete("/:userId", isAuthenticated, deleteUser);
+router.get(
+  "/users",
+  isAuthenticated,
+  authorizeRoles(userRoles.admin), //users kan fortfarande söka på alla andra
+  getAllUsers
+);
+router.get(
+  "/users/:userId",
+  isAuthenticated,
+  authorizeRoles(userRoles.admin),
+  getUserById
+);
+router.delete(
+  "/users/:userId",
+  isAuthenticated,
+  authorizeRoles(userRoles.admin),
+  deleteUserById
+);
 
 module.exports = router;

@@ -3,8 +3,13 @@ require("express-async-errors");
 const express = require("express");
 const apiRoutes = require("./routes/authRoutes");
 const cityRoutes = require("./routes/cityRoutes");
+const userRoutes = require("./routes/userRoutes");
+//const museumRoutes = require("./routes/museumRoutes");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
-const { notFoundMiddleware } = require("./middleware/notFoundMiddleware");
+const {
+  NotFoundMiddleware,
+  notFoundMiddleware,
+} = require("./middleware/notFoundMiddleware");
 const { authController } = require("./controllers/authController");
 
 const { sequelize } = require("./database/config");
@@ -23,6 +28,8 @@ app.use((req, res, next) => {
 // API Routes
 app.use("/api/v1", apiRoutes);
 app.use("/api/v1", cityRoutes);
+app.use("/api/v1", userRoutes);
+// app.use("/api/v1", museumRoutes);
 
 // Error Handling
 app.use(notFoundMiddleware);

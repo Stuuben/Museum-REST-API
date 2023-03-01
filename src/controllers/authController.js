@@ -15,11 +15,12 @@ exports.register = async (req, res) => {
 
   // Check if there are users in the database
   const [results, metadata] = await sequelize.query(
-    "SELECT id FROM user LIMIT 1"
+    "SELECT id FROM user LIMIT 2"
   );
 
-  // Add user to database (make admin if first user)
-  if (!results || results.length < 1) {
+  // Add user to database (make admin if first two user)
+  if (!results || results.length < 2) {
+    //fråga petter om denna, alla blir admins men ingen har behörighet
     // prettier-ignore
     await sequelize.query(
 			'INSERT INTO user ( user_name, password, email, role ) VALUES ($user_name, $password, $email, "admin")', 
@@ -81,7 +82,7 @@ exports.login = async (req, res) => {
     userId: user.id,
     // @ts-ignore
     email: user.email,
-    role: user["is_admin"] === 1 ? userRoles.ADMIN : userRoles.USER,
+    role: userRoles.admin === user.role ? userRoles.admin : userRoles.user,
   };
 
   // Create the JWT token
@@ -92,3 +93,5 @@ exports.login = async (req, res) => {
   // Return the token
   return res.json({ token: jwtToken, user: jwtPayload });
 };
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsImVtYWlsIjoidXNlcjQ0QHVzZXIuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE2Nzc2NTkwODgsImV4cCI6MTY3NzY2MjY4OH0.IyLCYIeJZs01WOEnfSB-MaximqOI-a7K8ePO8qS7Mbo
