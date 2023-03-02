@@ -1,5 +1,5 @@
 const { userRoles } = require("../constants/users");
-const { NotFoundError } = require("../middleware/authenticationMiddleware");
+const { NotFoundError } = require("../utils/error");
 const { sequelize } = require("../database/config");
 const { UnauthorizedError } = require("../utils/error");
 const { QueryTypes } = require("sequelize");
@@ -34,7 +34,8 @@ exports.getCityById = async (req, res) => {
   );
 
   // Not found error (ok since since route is authenticated)
-  if (!city) throw new NotFoundError("That city does not exist");
+  if (!city || city.length == 0)
+    throw new NotFoundError("There is no museum in this city");
 
   // Send back user info
   return res.json(city);
@@ -62,22 +63,26 @@ exports.deleteCityById = async (req, res) => {
   const cityId = req.params.cityId;
 
   // Check if user is admin || user is requesting to delete themselves
-  if (cityId != req.city?.cityId && req.user.role !== userRoles.admin) {
+  if (
+    cityId != req.city?.cityId &&
+    req.user.role !== userRoles.admin &&
+    req.user.role !== userRoles.owner
+  ) {
     throw new UnauthorizedError("Unauthorized Access");
   }
 
   // Delete the user from the database
-  const [results, metadata] = await sequelize.query(
+  const [city, metadata] = await sequelize.query(
     "DELETE FROM city WHERE id = $cityId RETURNING *",
     {
       bind: { cityId },
+      type: QueryTypes.SELECT,
     }
   );
 
   // Not found error (ok since since route is authenticated)
-  if (!results || !results[0])
-    throw new NotFoundError("That city does not exist");
+  if (!city || city.length == 0) new NotFoundError("That city does not exist");
 
   // Send back user info
-  return res.sendStatus(204); //lägg till successmeddelande
+  return res.json(city);
 };

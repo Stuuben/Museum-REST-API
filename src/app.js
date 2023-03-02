@@ -4,7 +4,7 @@ const express = require("express");
 const apiRoutes = require("./routes/authRoutes");
 const cityRoutes = require("./routes/cityRoutes");
 const userRoutes = require("./routes/userRoutes");
-//const museumRoutes = require("./routes/museumRoutes");
+const museumRoutes = require("./routes/museumRoutes");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 const {
   NotFoundMiddleware,
@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 app.use("/api/v1", apiRoutes);
 app.use("/api/v1", cityRoutes);
 app.use("/api/v1", userRoutes);
-// app.use("/api/v1", museumRoutes);
+app.use("/api/v1", museumRoutes);
 
 // Error Handling
 app.use(notFoundMiddleware);

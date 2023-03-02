@@ -18,13 +18,13 @@ router.get("/cities/:cityId", isAuthenticated, getCityById);
 router.delete(
   "/cities/:cityId",
   isAuthenticated,
-  authorizeRoles(userRoles.admin),
+  authorizeRoles(userRoles.admin || userRoles.owner),
   deleteCityById
 );
 router.post(
   "/cities/",
   isAuthenticated,
-  authorizeRoles(userRoles.admin),
+  authorizeRoles(userRoles.admin || userRoles.owner),
   createNewCity
 );
 

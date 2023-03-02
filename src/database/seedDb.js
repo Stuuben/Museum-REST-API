@@ -1,5 +1,5 @@
 const { sequelize } = require("./config");
-
+const bcrypt = require("bcrypt");
 sequelize.query("PRAGMA foreign_keys = ON;", { raw: true });
 
 const seedMuseumsDb = async () => {
@@ -48,7 +48,7 @@ const seedMuseumsDb = async () => {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           comment TEXT,
           grade INTERGER,
-          fk_user_id INTEGER NOT NULL,
+          fk_user_id INTERGER NOT NULL,
           fk_museum_id INTEGER NOT NULL,
           FOREIGN KEY(fk_user_id) REFERENCES user(id),
           FOREIGN KEY(fk_museum_id) REFERENCES museum(id)
@@ -56,10 +56,17 @@ const seedMuseumsDb = async () => {
         );
         `);
 
+    const adminsalt = await bcrypt.genSalt(10);
+    const adminPassword = await bcrypt.hash("password123", adminsalt);
+
+    const ownersalt = await bcrypt.genSalt(10);
+    const ownerPassword = await bcrypt.hash("password123", ownersalt);
+
     //USERS KOPPLA OWNERS TILL MUSEUM!
     await sequelize.query(`
     INSERT INTO user (user_name, password, email, role) VALUES 
-    ("admin", "password123", "admin@admin.com", "admin")
+      ("admin", "${adminPassword}", "admin@admin.com", "admin"),
+      ("owner", "${ownerPassword}", "owner@owner.com", "owner")
 
     `);
 

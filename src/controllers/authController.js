@@ -15,36 +15,20 @@ exports.register = async (req, res) => {
 
   // Check if there are users in the database
   const [results, metadata] = await sequelize.query(
-    "SELECT id FROM user LIMIT 2"
+    "SELECT id FROM user LIMIT 1"
   );
-
-  // Add user to database (make admin if first two user)
-  if (!results || results.length < 2) {
-    //fråga petter om denna, alla blir admins men ingen har behörighet
-    // prettier-ignore
-    await sequelize.query(
-			'INSERT INTO user ( user_name, password, email, role ) VALUES ($user_name, $password, $email, "admin")', 
-			{
-				bind: {
-          user_name: user_name,
-					password: hashedpassword,
-					email: email
-				}
-			}
-		)
-  } else {
-    // prettier-ignore
-    await sequelize.query(
-			'INSERT INTO user (user_name, password, email, role ) VALUES ($user_name, $password, $email, "user")', 
+  // prettier-ignore
+  await sequelize.query(
+			'INSERT INTO user (user_name, password, email, role ) VALUES ($user_name, $password, $email, "admin")', 
 			{
 				bind: {
           user_name: user_name,
 					password: hashedpassword,
 					email: email,
+          
 				},
 			}
 		)
-  }
 
   // Request response
   return res.status(201).json({
@@ -55,17 +39,15 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   // Place candidate email and password into local variables
   const { email, password: canditatePassword } = req.body;
-
+  console.log("HEJEHJEHJEHj 1");
   // Check if user with that email exits in db
   // prettier-ignore
   const [user, metadata] = await sequelize.query(
 		'SELECT * FROM user WHERE email = $email LIMIT 1;', {
-		bind: { email },
+		bind: { email},
 		type: QueryTypes.SELECT
 	})
-
-  console.log(user);
-
+  console.log("HEJEHJEHJEHj 2");
   if (!user) throw new UnauthenticatedError("Invalid Credentials");
 
   // Check if password is correct
@@ -75,6 +57,11 @@ exports.login = async (req, res) => {
     user.password
   );
   if (!isPasswordCorrect) throw new UnauthenticatedError("Invalid Credentials");
+
+  console.log("HEJEHJEHJEHj 3");
+
+  //const salt = await bcrypt.genSalt(10);
+  //const hashedpassword = await bcrypt.hash(password, salt);
 
   // Create JWT payload (aka JWT contents)
   const jwtPayload = {
@@ -87,7 +74,7 @@ exports.login = async (req, res) => {
 
   // Create the JWT token
   const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
-    expiresIn: "1h" /* 1d */,
+    expiresIn: /*"1h"*/ "1d",
   });
 
   // Return the token
