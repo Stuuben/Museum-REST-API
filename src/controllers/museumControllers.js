@@ -5,8 +5,7 @@ const { UnauthorizedError, NotFoundError } = require("../utils/error");
 
 exports.getAllMuseums = async (req, res) => {
   let query;
-  //let options = {};
-  // if (req.user.role === userRoles.admin) {
+  let options = {};
 
   query = `
     SELECT  m.id, m.name, m.address, m.zipcode, m.fee, c.name AS city, fk_city_id 
@@ -14,8 +13,8 @@ FROM museum m
 JOIN city c ON c.id = m.fk_city_id
 
     `;
-  const [results, metadata] = await sequelize.query(query, options);
 
+  const [results, metadata] = await sequelize.query(query, options);
   return res.json(results);
 };
 

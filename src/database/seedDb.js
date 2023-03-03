@@ -56,18 +56,16 @@ const seedMuseumsDb = async () => {
         );
         `);
 
-    const adminsalt = await bcrypt.genSalt(10);
-    const adminPassword = await bcrypt.hash("password123", adminsalt);
-
-    const ownersalt = await bcrypt.genSalt(10);
-    const ownerPassword = await bcrypt.hash("password123", ownersalt);
+    const usersalt = await bcrypt.genSalt(10);
+    const userPassword = await bcrypt.hash("password123", usersalt);
 
     //USERS KOPPLA OWNERS TILL MUSEUM!
     await sequelize.query(`
     INSERT INTO user (user_name, password, email, role) VALUES 
-      ("admin", "${adminPassword}", "admin@admin.com", "admin"),
-      ("owner", "${ownerPassword}", "owner@owner.com", "owner")
-
+      ("admin", "${userPassword}", "admin@admin.com", "admin"),
+      ("owner", "${userPassword}", "owner@owner.com", "owner"),
+      ("user", "${userPassword}", "user@user.com", "user"),
+      ("user2", "${userPassword}", "user2@user.com", "user")
     `);
 
     /* ("user1", "password123", "user1@user.com", "user"), 
@@ -99,7 +97,10 @@ const seedMuseumsDb = async () => {
     //REVIEWS
     await sequelize.query(`
     INSERT INTO review (comment, grade, fk_user_id, fk_museum_id) VALUES 
-    ("Bästa museet i stan!", 5, (SELECT id FROM user WHERE email = "admin@admin.com" ), (SELECT id FROM museum WHERE name = "Vasamuseet"))
+    ("Bästa museet i stan!", 5, (SELECT id FROM user WHERE email = "admin@admin.com" ), (SELECT id FROM museum WHERE name = "Vasamuseet")),
+    ("Benny var inte där...", 1, (SELECT id FROM user WHERE email = "owner@owner.com" ), (SELECT id FROM museum WHERE name = "ABBA Museet")),
+    ("Miss u man! wish you where still with us!", 4, (SELECT id FROM user WHERE email = "user@user.com" ), (SELECT id FROM museum WHERE name = "Avicii Experience")),
+    ("Väldigt trevligt museum. Bra pris!", 5, (SELECT id FROM user WHERE email = "admin@admin.com" ), (SELECT id FROM museum WHERE name = "ABBA Museet"))
     `);
 
     console.log("Database successfully populated with data...");
