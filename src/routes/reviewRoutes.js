@@ -11,11 +11,17 @@ const {
   createNewReview,
   deleteReviewById,
 } = require("../controllers/reviewControllers");
+const userRoles = require("../constants/users");
 
 router.get("/reviews", isAuthenticated, getAllReviews);
 router.get("/reviews/user/:userId", isAuthenticated, getReviewsByUserId);
 router.get("/reviews/museum/:museumId", isAuthenticated, getReviewsByMuseum);
 router.post("/reviews", isAuthenticated, createNewReview);
-router.delete("/reviews/:reviewId", isAuthenticated, deleteReviewById);
+router.delete(
+  "/reviews/:reviewId",
+  isAuthenticated,
+  //authorizeRoles(userRoles.admin || userRoles.owner),
+  deleteReviewById
+);
 
 module.exports = router;

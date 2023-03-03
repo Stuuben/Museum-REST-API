@@ -14,7 +14,7 @@ const router = express.Router();
 router.get(
   "/users",
   isAuthenticated,
-  authorizeRoles(userRoles.admin), //users kan fortfarande söka på alla andra
+  authorizeRoles(userRoles.admin),
   getAllUsers
 );
 router.get(

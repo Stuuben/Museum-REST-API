@@ -4,6 +4,7 @@ const { sequelize } = require("../database/config");
 const { UnauthorizedError, NotFoundError } = require("../utils/error");
 
 exports.getAllMuseums = async (req, res) => {
+  // VAD ÄR QUERY / OPTIONS / METADATA ?? fråga petter
   let query;
   let options = {};
 
@@ -39,11 +40,9 @@ WHERE m.id = $museumId
   );
   console.log(museum);
 
-  // Not found error (ok since since route is authenticated)
   if (!museum || museum.length == 0)
     throw new NotFoundError("That museum does not exist");
 
-  // Send back user info
   return res.json(museum);
 };
 
@@ -115,11 +114,8 @@ exports.updateMuseumById = async (req, res) => {
 };
 
 exports.deleteMuseumById = async (req, res) => {
-  // Grab the user id and place in local variable
-
   const museumId = req.params.museumId;
 
-  // Check if user is admin || user is requesting to delete themselves
   if (
     museumId != req.museum?.museumId &&
     req.user.role !== userRoles.admin &&
@@ -128,7 +124,6 @@ exports.deleteMuseumById = async (req, res) => {
     throw new UnauthorizedError("Unauthorized Access");
   }
 
-  // Delete the user from the database
   const [museum, metadata] = await sequelize.query(
     "DELETE FROM museum WHERE id = $museumId RETURNING *",
     {
@@ -137,9 +132,7 @@ exports.deleteMuseumById = async (req, res) => {
     }
   );
 
-  // Not found error (ok since since route is authenticated)
   if (!museumId) new NotFoundError("That museum does not exist");
 
-  // Send back user info
   return res.json(museumId);
 };

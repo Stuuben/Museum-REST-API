@@ -7,10 +7,7 @@ exports.notFoundMiddleware = (req, res, next) => {
   if (isApiPath) {
     throw new NotFoundError("This endpoint does not exist...");
   } else {
-    return res
-      .status(404)
-      .sendFile(path.join(__dirname, "..", "views", "notFound.html"));
+    return res.status(404);
+    // .sendFile(path.join(__dirname, "..", "views", "notFound.html"));
   }
 };
-
-// exports.notFound = (req, res) => res.status(404).send('Route does not exist')

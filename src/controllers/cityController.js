@@ -4,27 +4,20 @@ const { sequelize } = require("../database/config");
 const { UnauthorizedError } = require("../utils/error");
 const { QueryTypes } = require("sequelize");
 
-//exports.getAllCities = (req, res) => res.send("getAllCities");
-
 exports.getAllCities = async (req, res) => {
   let query;
   let options = {};
-  if (req.user.role === userRoles.admin) {
-    console.log(req.user.role);
-    query = `
-      SELECT * FROM city`;
-  } else {
-    throw new UnauthorizedError("Unauthorized Access");
-  }
+  //if (req.user.role === userRoles.admin)S
+  query = `
+      SELECT * FROM city
+      `;
   const [results, metadata] = await sequelize.query(query, options);
   return res.json(results);
 };
 
 exports.getCityById = async (req, res) => {
-  // Grab the user id and place in local variable
   const cityId = req.params.cityId;
 
-  // Get the user from the database (NOTE: excluding password)
   const [city, metadata] = await sequelize.query(
     "SELECT * FROM city WHERE id = $cityId",
     {
@@ -33,23 +26,20 @@ exports.getCityById = async (req, res) => {
     }
   );
 
-  // Not found error (ok since since route is authenticated)
   if (!city || city.length == 0)
-    throw new NotFoundError("There is no museum in this city");
+    throw new NotFoundError("There do not have this city listed on our site");
 
-  // Send back user info
   return res.json(city);
 };
 
 exports.createNewCity = async (req, res) => {
-  //gör if sats för om staden redan finns
   const { name } = req.body;
 
   const [newCityId] = await sequelize.query(
     "INSERT INTO city (name) VALUES ($cityName);",
     {
       bind: { cityName: name },
-      type: QueryTypes.INSERT, // returns ID of created row
+      type: QueryTypes.INSERT,
     }
   );
   // prettier-ignore
@@ -59,10 +49,8 @@ exports.createNewCity = async (req, res) => {
 };
 
 exports.deleteCityById = async (req, res) => {
-  // Grab the user id and place in local variable
   const cityId = req.params.cityId;
 
-  // Check if user is admin || user is requesting to delete themselves
   if (
     cityId != req.city?.cityId &&
     req.user.role !== userRoles.admin &&
@@ -71,7 +59,6 @@ exports.deleteCityById = async (req, res) => {
     throw new UnauthorizedError("Unauthorized Access");
   }
 
-  // Delete the user from the database
   const [city, metadata] = await sequelize.query(
     "DELETE FROM city WHERE id = $cityId RETURNING *",
     {
@@ -80,9 +67,14 @@ exports.deleteCityById = async (req, res) => {
     }
   );
 
-  // Not found error (ok since since route is authenticated)
-  if (!city || city.length == 0) new NotFoundError("That city does not exist");
+  query =
+    ("SELECT * FROM city WHERE id = $cityId",
+    {
+      bind: { cityId },
+      type: QueryTypes.SELECT,
+    });
 
-  // Send back user info
+  if (!city || city.length == 0) new NotFoundError("That city does not exist"); //DETTA FELMEDDELANDE KOMMER INTE FRAM NÄR VI RADERAR STAD SOM INTE FINNS. FRÅGA PETTER
+
   return res.json(city);
 };

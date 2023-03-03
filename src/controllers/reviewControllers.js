@@ -9,10 +9,8 @@ exports.getAllReviews = async (req, res) => {
 };
 
 exports.getReviewsByUserId = async (req, res) => {
-  // Grab the user id and place in local variable
   const userId = req.params.userId;
 
-  // Get the user from the database (NOTE: excluding password)
   const [results, metadata] = await sequelize.query(
     `
   SELECT  review.id, review.comment, review.grade, review.fk_museum_id AS museum, user.user_name AS user, review.fk_user_id AS user_ID 
@@ -26,18 +24,14 @@ exports.getReviewsByUserId = async (req, res) => {
     }
   );
 
-  // Not found error (ok since since route is authenticated)
-  if (!userId) throw new NotFoundError("That user has not written any reviews");
+  if (!userId) throw new NotFoundError("That user has not written any reviews"); //FELMEDDELANDE TOM ARRAY, HUR LÖSER VI DET? FRÅGA PETTER
 
-  // Send back user info
   return res.json(results);
 };
 
 exports.getReviewsByMuseum = async (req, res) => {
-  // Grab the user id and place in local variable
   const museumId = req.params.museumId;
 
-  // Get the user from the database (NOTE: excluding password)
   const [results, metadata] = await sequelize.query(
     `
   SELECT  review.id, review.comment, review.grade, review.fk_museum_id AS museum, review.fk_user_id AS user_ID 
@@ -51,10 +45,7 @@ exports.getReviewsByMuseum = async (req, res) => {
     }
   );
 
-  // Not found error (ok since since route is authenticated)
-  if (!museumId) throw new NotFoundError("That museum does not exist");
-
-  // Send back user info
+  if (!museumId) throw new NotFoundError("That museum does not exist"); //FELMEDDELANDE TOM ARRAY, HUR LÖSER VI DET? FRÅGA PETTER
   return res.json(results);
 };
 

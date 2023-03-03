@@ -4,24 +4,23 @@ sequelize.query("PRAGMA foreign_keys = ON;", { raw: true });
 
 const seedMuseumsDb = async () => {
   try {
-    // Drop tables if exist
     await sequelize.query(`DROP TABLE IF EXISTS review;`);
     await sequelize.query(`DROP TABLE IF EXISTS museum;`);
     await sequelize.query(`DROP TABLE IF EXISTS city;`);
     await sequelize.query(`DROP TABLE IF EXISTS user;`);
 
-    // Create USER table
     await sequelize.query(`
         CREATE TABLE IF NOT EXISTS user (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_name TEXT,
+          user_name TEXT UNIQUE,
           password TEXT,
-          email TEXT,
+          email TEXT UNIQUE,
           role TEXT
+      
           );
+          
         `);
 
-    //Create city table
     await sequelize.query(`
         CREATE TABLE IF NOT EXISTS city (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +28,6 @@ const seedMuseumsDb = async () => {
         );
       `);
 
-    // Create museum table
     await sequelize.query(`
     CREATE TABLE IF NOT EXISTS museum (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,7 +40,6 @@ const seedMuseumsDb = async () => {
       );
     `);
 
-    //Create review table
     await sequelize.query(`
         CREATE TABLE IF NOT EXISTS review (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,13 +50,13 @@ const seedMuseumsDb = async () => {
           FOREIGN KEY(fk_user_id) REFERENCES user(id),
           FOREIGN KEY(fk_museum_id) REFERENCES museum(id)
           
+          
         );
         `);
 
     const usersalt = await bcrypt.genSalt(10);
     const userPassword = await bcrypt.hash("password123", usersalt);
 
-    //USERS KOPPLA OWNERS TILL MUSEUM!
     await sequelize.query(`
     INSERT INTO user (user_name, password, email, role) VALUES 
       ("admin", "${userPassword}", "admin@admin.com", "admin"),
@@ -68,18 +65,10 @@ const seedMuseumsDb = async () => {
       ("user2", "${userPassword}", "user2@user.com", "user")
     `);
 
-    /* ("user1", "password123", "user1@user.com", "user"), 
-    ("user2", "password123", "user2@user.com", "user"), 
-    ("owner_stockholm", "password123", "owner_stockholm@owner.com", "owner"),
-    ("owner_göteborg", "password123", "owner_göteborg@owner.com", "owner"),
-    ("owner_malmö", "password123", "owner_malmö@owner.com", "owner") */
-
-    ///// CITY///////
     await sequelize.query(`
     INSERT INTO city (name) VALUES ("Stockholm"), ("Göteborg"), ("Malmö")
     `);
 
-    ////////MUSEUM/////
     await sequelize.query(`
     INSERT INTO museum (name, address, zipcode, fk_city_id, fee) VALUES 
     ("Vasamuseet", "Galärvarvägen 14", "115 21", (SELECT id FROM city WHERE name = 'Stockholm'), 180),
@@ -94,7 +83,6 @@ const seedMuseumsDb = async () => {
     ("Disgusting Food Museum", "Södra Förstadsgatan 2","211 43", (SELECT id FROM city WHERE name = 'Malmö'), 195)
     `);
 
-    //REVIEWS
     await sequelize.query(`
     INSERT INTO review (comment, grade, fk_user_id, fk_museum_id) VALUES 
     ("Bästa museet i stan!", 5, (SELECT id FROM user WHERE email = "admin@admin.com" ), (SELECT id FROM museum WHERE name = "Vasamuseet")),
@@ -105,11 +93,8 @@ const seedMuseumsDb = async () => {
 
     console.log("Database successfully populated with data...");
   } catch (error) {
-    // Log eny eventual errors to Terminal
     console.error(error);
   } finally {
-    // End Node process
-
     process.exit(0);
   }
 };
