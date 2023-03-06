@@ -28,7 +28,7 @@ router.put(
   updateMuseumById
 );
 router.delete(
-  "/museum/:museumId",
+  "/museums/:museumId",
   isAuthenticated,
   authorizeRoles(userRoles.admin || userRoles.owner),
   deleteMuseumById
