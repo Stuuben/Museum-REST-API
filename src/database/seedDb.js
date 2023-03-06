@@ -88,7 +88,14 @@ const seedMuseumsDb = async () => {
     ("Bästa museet i stan!", 5, (SELECT id FROM user WHERE email = "admin@admin.com" ), (SELECT id FROM museum WHERE name = "Vasamuseet")),
     ("Benny var inte där...", 1, (SELECT id FROM user WHERE email = "owner@owner.com" ), (SELECT id FROM museum WHERE name = "ABBA Museet")),
     ("Miss u man! wish you where still with us!", 4, (SELECT id FROM user WHERE email = "user@user.com" ), (SELECT id FROM museum WHERE name = "Avicii Experience")),
-    ("Väldigt trevligt museum. Bra pris!", 5, (SELECT id FROM user WHERE email = "admin@admin.com" ), (SELECT id FROM museum WHERE name = "ABBA Museet"))
+    ("Väldigt trevligt museum. Bra pris!", 5, (SELECT id FROM user WHERE email = "admin@admin.com" ), (SELECT id FROM museum WHERE name = "ABBA Museet")),
+    ("Helt okej men maten i cafét är inte att rekommendera. Åkte på magsjukan....!", 2, (SELECT id FROM user WHERE email = "user@user.com" ), (SELECT id FROM museum WHERE name = "Technology & Maritime Museum")),
+    ("Not only is Skansen a delightful trip out of time in the center of a modern city, but it also provides insight into the life and Swedish culture", 5, (SELECT id FROM user WHERE email = "user@user.com" ), (SELECT id FROM museum WHERE name = "Skansen")),
+    ("Trevlig personal, men svårt att parkera bilen.", 3, (SELECT id FROM user WHERE email = "user2@user.com" ), (SELECT id FROM museum WHERE name = "Disgusting Food Museum")),
+    ("Väldigt Nordiskt! Hade velat ha lite mer från söder också ", 2, (SELECT id FROM user WHERE email = "user2@user.com" ), (SELECT id FROM museum WHERE name = "Nordiska museet")),
+    ("Till alla flygfantaster rekommenderas Aeroseum varmt! Dom har till och med en JAS Gripen där!", 5, (SELECT id FROM user WHERE email = "user@user.com" ), (SELECT id FROM museum WHERE name = "Aeroseum")),
+    ("Sjuuukt häftigt!!!", 5, (SELECT id FROM user WHERE email = "user2@user.com" ), (SELECT id FROM museum WHERE name = "Aeroseum")),
+    ("Trodde de sålde kameror men ikket!", 1, (SELECT id FROM user WHERE email = "user@user.com" ), (SELECT id FROM museum WHERE name = "Fotografiska"))
     `);
 
     console.log("Database successfully populated with data...");

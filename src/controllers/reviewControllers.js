@@ -97,7 +97,6 @@ exports.deleteReviewById = async (req, res) => {
 
   if (
     req.user.role == userRoles.admin ||
-    req.user.role == userRoles.owner ||
     req.user.userId == review.fk_user_id
   ) {
     await sequelize.query(

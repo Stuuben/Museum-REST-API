@@ -1,5 +1,7 @@
 require("dotenv").config();
 require("express-async-errors");
+const helmet = require("helmet");
+const cors = require("cors");
 const express = require("express");
 const apiRoutes = require("./routes/authRoutes");
 const cityRoutes = require("./routes/cityRoutes");
@@ -14,12 +16,26 @@ const {
 const { authController } = require("./controllers/authController");
 
 const { sequelize } = require("./database/config");
+//const { default: helmet } = require("helmet");
 
 //Create our Expres app
 const app = express();
 
 //Middleware
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "PUT", "POST", "DELETE", "PATCH"],
+  })
+);
+
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
 app.use((req, res, next) => {
   console.log(`Processing ${req.method} request to ${req.path}`);

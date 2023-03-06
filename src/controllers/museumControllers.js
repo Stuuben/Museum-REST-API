@@ -112,7 +112,7 @@ exports.updateMuseumById = async (req, res) => {
     throw new UnauthorizedError("You are not allowed to perform this action");
   }
 };
-
+/*
 exports.deleteMuseumById = async (req, res) => {
   const museumId = req.params.museumId;
 
@@ -132,7 +132,61 @@ exports.deleteMuseumById = async (req, res) => {
     }
   );
 
-  if (!museumId) new NotFoundError("That museum does not exist");
+  query =
+    ("SELECT * FROM museum WHERE id = $museumId",
+    {
+      bind: { museumId },
+      type: QueryTypes.SELECT,
+    });
 
-  return res.json(museumId);
+  //if (!city || city.length == 0) new NotFoundError("That city does not exist"); //DETTA FELMEDDELANDE KOMMER INTE FRAM NÄR VI RADERAR STAD SOM INTE FINNS. FRÅGA PETTER
+
+  return res.json(museum);
+};
+*/
+
+exports.deleteMuseumById = async (req, res) => {
+  const museumId = req.params.museumId;
+
+  const [museum, museumMeta] = await sequelize.query(
+    `
+        SELECT * FROM museum
+        WHERE museum.id = $museumId  
+        `,
+    {
+      bind: { museumId: museumId },
+      type: QueryTypes.SELECT,
+    }
+  );
+
+  if (!museum) {
+    throw new NotFoundError("This museum does not exist.");
+  }
+
+  if (
+    req.user.role == userRoles.admin ||
+    req.user.role == userRoles.owner ||
+    req.city.cityId == museum.fk_city_id ||
+    req.museum.museumId == review.fk_museum_id
+    //museumId != req.museum?.museumId
+  ) {
+    await sequelize.query(
+      `
+              DELETE FROM museum
+              WHERE museum.id = $museumId 
+              RETURNING *
+              `,
+      {
+        bind: {
+          museumId: museumId,
+        },
+        types: QueryTypes.DELETE,
+      }
+    );
+    return res.sendStatus(204);
+  } else {
+    throw new UnauthorizedError(
+      "You do not have permission to delete this museum"
+    );
+  }
 };

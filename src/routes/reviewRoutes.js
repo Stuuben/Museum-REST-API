@@ -20,7 +20,7 @@ router.post("/reviews", isAuthenticated, createNewReview);
 router.delete(
   "/reviews/:reviewId",
   isAuthenticated,
-  //authorizeRoles(userRoles.admin || userRoles.owner),
+  authorizeRoles(userRoles.admin),
   deleteReviewById
 );
 
