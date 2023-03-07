@@ -3,6 +3,7 @@ require("express-async-errors");
 const helmet = require("helmet");
 const cors = require("cors");
 const express = require("express");
+const xss = require("xss-clean");
 const apiRoutes = require("./routes/authRoutes");
 const cityRoutes = require("./routes/cityRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -36,6 +37,8 @@ app.use(
     crossOriginEmbedderPolicy: false,
   })
 );
+
+app.use(xss());
 
 app.use((req, res, next) => {
   console.log(`Processing ${req.method} request to ${req.path}`);

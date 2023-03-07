@@ -9,18 +9,18 @@ const {
   getAllCities,
   getCityById,
   createNewCity,
-  deleteCityById,
+  //deleteCityById,
 } = require("../controllers/cityController");
 const { userRoles } = require("../constants/users");
 
 router.get("/cities", isAuthenticated, getAllCities);
 router.get("/cities/:cityId", isAuthenticated, getCityById);
-router.delete(
+/*router.delete(
   "/cities/:cityId",
   isAuthenticated,
   authorizeRoles(userRoles.admin || userRoles.owner),
   deleteCityById
-);
+);*/
 router.post(
   "/cities/",
   isAuthenticated,

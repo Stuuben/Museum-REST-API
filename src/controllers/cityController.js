@@ -7,7 +7,6 @@ const { QueryTypes } = require("sequelize");
 exports.getAllCities = async (req, res) => {
   let query;
   let options = {};
-  //if (req.user.role === userRoles.admin)S
   query = `
       SELECT * FROM city
       `;
@@ -27,7 +26,7 @@ exports.getCityById = async (req, res) => {
   );
 
   if (!city || city.length == 0)
-    throw new NotFoundError("There do not have this city listed on our site");
+    throw new NotFoundError("We do not have this city listed on our site");
 
   return res.json(city);
 };
@@ -47,6 +46,8 @@ exports.createNewCity = async (req, res) => {
     .setHeader('Location', `${req.protocol}://${req.headers.host}/api/v1/cities/${newCityId}`)
     .sendStatus(201);
 };
+
+/*
 
 exports.deleteCityById = async (req, res) => {
   const cityId = req.params.cityId;
@@ -74,7 +75,9 @@ exports.deleteCityById = async (req, res) => {
       type: QueryTypes.SELECT,
     });
 
-  if (!city || city.length == 0) new NotFoundError("That city does not exist"); //DETTA FELMEDDELANDE KOMMER INTE FRAM NÄR VI RADERAR STAD SOM INTE FINNS. FRÅGA PETTER
+  if (!city || city.length == 0)
+    throw new NotFoundError("That city does not exist");
 
   return res.json(city);
 };
+*/

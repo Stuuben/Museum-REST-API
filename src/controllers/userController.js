@@ -24,28 +24,48 @@ exports.getUserById = async (req, res) => {
 };
 
 exports.deleteUserById = async (req, res) => {
-  //KEY CONTRAINTS FAILED NÄR VI FÖRSÖKER RADERA. FRÅGA PETTER OM DENNA!
   const userId = req.params.userId;
 
-  const [user, userMeta] = await sequelize.query(
+  const [review, reviewMeta] = await sequelize.query(
     `
-        SELECT * FROM user
-        WHERE user.id = $userId  
+        SELECT * FROM review
+        WHERE review.fk_user_id = $userId  
         `,
     {
       bind: { userId: userId },
       type: QueryTypes.SELECT,
     }
   );
-
-  if (!user) {
-    throw new NotFoundError("This user does not exist.");
-  }
-
   if (
     req.user.role == userRoles.admin ||
-    req.user.role == userRoles.owner ||
-    req.review.fk_user_id == userId
+    req.user.userId == review.fk_user_id
+  ) {
+    await sequelize.query(
+      `
+              DELETE FROM review
+              WHERE review.fk_user_id = $userId 
+              `,
+      {
+        bind: {
+          userId: userId,
+        },
+        types: QueryTypes.DELETE,
+      }
+    );
+  }
+  const [user, userMeta] = await sequelize.query(
+    `
+        SELECT * FROM user
+        WHERE user.id = $userId
+        `,
+    {
+      bind: { userId: userId },
+      type: QueryTypes.SELECT,
+    }
+  );
+  if (
+    req.user.role == userRoles.admin ||
+    req.user.userId == review.fk_user_id
   ) {
     await sequelize.query(
       `
@@ -60,35 +80,5 @@ exports.deleteUserById = async (req, res) => {
       }
     );
     return res.sendStatus(204);
-  } else {
-    throw new UnauthorizedError(
-      "You do not have permission to delete this user"
-    );
   }
 };
-
-/*
-exports.deleteUserById = async (req, res) => {
-  const userId = req.params.userId;
-  if (userId != req.user?.userId && req.user.role !== userRoles.admin) {
-    throw new UnauthorizedError("Unauthorized Access");
-  }
-
-  const [results, metadata] = await sequelize.query(
-    "DELETE FROM user WHERE id = $userId RETURNING *",
-    {
-      bind: { userId },
-    }
-  );
-
-  if (!results || !results[0])
-    throw new NotFoundError("That user does not exist");
-
-  await sequelize.query("DELETE FROM user WHERE userId = $userId", {
-    bind: { userId },
-  });
-
-  return res.sendStatus(204);
-};
-
-*/

@@ -11,7 +11,7 @@ const {
   createNewReview,
   deleteReviewById,
 } = require("../controllers/reviewControllers");
-const userRoles = require("../constants/users");
+const { userRoles } = require("../constants/users");
 
 router.get("/reviews", isAuthenticated, getAllReviews);
 router.get("/reviews/user/:userId", isAuthenticated, getReviewsByUserId);

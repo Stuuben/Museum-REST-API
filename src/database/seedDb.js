@@ -16,7 +16,6 @@ const seedMuseumsDb = async () => {
           password TEXT,
           email TEXT UNIQUE,
           role TEXT
-      
           );
           
         `);
@@ -36,7 +35,7 @@ const seedMuseumsDb = async () => {
       zipcode TEXT,
       fk_city_id INTEGER NOT NULL,
       fee INTEGER,
-      FOREIGN KEY(fk_city_id) REFERENCES city(id)
+      FOREIGN KEY(fk_city_id) REFERENCES city(id) ON DELETE CASCADE
       );
     `);
 
