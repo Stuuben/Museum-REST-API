@@ -47,7 +47,7 @@ const seedMuseumsDb = async () => {
           fk_user_id INTERGER NOT NULL,
           fk_museum_id INTEGER NOT NULL,
           FOREIGN KEY(fk_user_id) REFERENCES user(id),
-          FOREIGN KEY(fk_museum_id) REFERENCES museum(id)
+          FOREIGN KEY(fk_museum_id) REFERENCES museum(id) 
           
           
         );

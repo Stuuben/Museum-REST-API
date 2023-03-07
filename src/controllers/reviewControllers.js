@@ -4,7 +4,30 @@ const { userRoles } = require("../constants/users");
 const { QueryTypes } = require("sequelize");
 
 exports.getAllReviews = async (req, res) => {
-  const [review, metadata] = await sequelize.query("SELECT * FROM review");
+  let museum = req.query.museum;
+  let limit = req.query.limit || 10;
+
+  if (!museum) {
+    const [museumReview, museumReviewData] = await sequelize.query(
+      `SELECT * FROM review LIMIT $limit`,
+      { bind: { limit: limit } }
+    );
+    return res.json(museumReview);
+  }
+
+  const [review, metadata] = await sequelize.query(
+    `
+  SELECT * FROM review 
+  JOIN museum m ON m.id = review.fk_museum_id
+  WHERE m.name = $museum
+  LIMIT $limit`,
+    {
+      bind: {
+        limit: limit,
+        museum: museum,
+      },
+    }
+  );
   return res.json(review);
 };
 
@@ -38,6 +61,7 @@ exports.getReviewsByMuseum = async (req, res) => {
   SELECT review.id, review.comment, review.grade, review.fk_museum_id AS museum, review.fk_user_id AS user_ID 
   FROM review
   WHERE review.fk_museum_id = $museumId
+  ORDER BY review.grade DESC
     `,
     {
       bind: { museumId },

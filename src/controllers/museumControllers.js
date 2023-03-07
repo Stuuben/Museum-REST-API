@@ -7,18 +7,30 @@ exports.getAllMuseums = async (req, res) => {
   // VAD ÄR QUERY / OPTIONS / METADATA ?? fråga petter
 
   let city = req.query.city;
+  let limit = req.query.limit || 10;
 
+  if (!city) {
+    const [museums, museumData] = await sequelize.query(
+      `SELECT * FROM museum LIMIT $limit`,
+      { bind: { limit: limit } }
+    );
+    return res.json(museums);
+  }
   // console.log(city);
   const [results, resultData] = await sequelize.query(
     `
-    SELECT  m.id, m.name, m.address, m.zipcode, m.fee, fk_city_id, c.name 
+    SELECT  m.id, m.name, m.address, m.zipcode, m.fee, fk_city_id, c.name AS city
 FROM museum m
 JOIN city c ON c.id = m.fk_city_id
 WHERE c.name = $city
+LIMIT $limit
 
     `,
     {
-      bind: { city },
+      bind: {
+        city: city,
+        limit: limit,
+      },
     }
   );
 

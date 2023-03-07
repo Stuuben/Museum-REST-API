@@ -6,11 +6,18 @@ const { QueryTypes } = require("sequelize");
 
 exports.getAllCities = async (req, res) => {
   let query;
-  let options = {};
-  query = `
-      SELECT * FROM city
-      `;
-  const [results, metadata] = await sequelize.query(query, options);
+  let limit = req.query.limit || 2;
+  const [results, metadata] = await sequelize.query(
+    `
+  SELECT * FROM city
+  limit $limit
+  `,
+    {
+      bind: {
+        limit: limit,
+      },
+    }
+  );
   return res.json(results);
 };
 
