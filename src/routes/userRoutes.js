@@ -26,7 +26,7 @@ router.get(
 router.delete(
   "/users/:userId",
   isAuthenticated,
-  authorizeRoles(userRoles.admin),
+  // authorizeRoles(userRoles.admin),
   deleteUserById
 );
 
