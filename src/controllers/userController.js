@@ -80,5 +80,7 @@ exports.deleteUserById = async (req, res) => {
       }
     );
     return res.sendStatus(204);
+  } else {
+    throw new UnauthorizedError("You are not allowed to perform this action");
   }
 };
