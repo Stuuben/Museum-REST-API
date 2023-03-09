@@ -18,19 +18,19 @@ router.get("/museums/:museumId", isAuthenticated, getMuseumById);
 router.post(
   "/museums",
   isAuthenticated,
-  authorizeRoles(userRoles.admin || userRoles.owner),
+  authorizeRoles(userRoles.admin, userRoles.owner),
   createNewMuseum
 );
 router.put(
   "/museums/:museumId",
   isAuthenticated,
-  authorizeRoles(userRoles.admin || userRoles.owner),
+  authorizeRoles(userRoles.admin, userRoles.owner),
   updateMuseumById
 );
 router.delete(
   "/museums/:museumId",
   isAuthenticated,
-  authorizeRoles(userRoles.admin || userRoles.owner),
+  authorizeRoles(userRoles.admin, userRoles.owner),
   deleteMuseumById
 );
 

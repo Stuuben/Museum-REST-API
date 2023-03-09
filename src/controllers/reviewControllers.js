@@ -33,7 +33,6 @@ exports.getAllReviews = async (req, res) => {
 
 exports.getReviewsByUserId = async (req, res) => {
   const userId = req.params.userId;
-  //const fk = review.fk_user_id;
 
   const [results, metadata] = await sequelize.query(
     `
@@ -55,22 +54,6 @@ exports.getReviewsByUserId = async (req, res) => {
 
 exports.getReviewsByMuseum = async (req, res) => {
   const museumId = req.params.museumId;
-  /*
-  const [review, reviewdata] = await sequelize.query(
-    `
-  SELECT review.id, review.comment, review.grade, review.fk_museum_id AS museum, review.fk_user_id AS user_ID 
-  FROM review
-  WHERE review.fk_museum_id = $museumId
-  ORDER BY review.grade DESC
-    `,
-    {
-      bind: { museumId },
-    }
-  );
-  if (!review) {
-    throw new NotFoundError("That museum does not have any reviews");
-  }
-*/
   const [review, metadata] = await sequelize.query(
     `
   SELECT  review.id, review.comment, review.grade, review.fk_museum_id AS museum, review.fk_user_id AS user_ID 
@@ -84,7 +67,7 @@ exports.getReviewsByMuseum = async (req, res) => {
       bind: { museumId },
     }
   );
-  console.log("EHEJEJHEEJKJEKHEKJHE");
+
   if (!review || review.length == 0) {
     throw new NotFoundError("That museum does not have any reviews");
   }
@@ -121,7 +104,6 @@ exports.createNewReview = async (req, res) => {
 
 exports.deleteReviewById = async (req, res) => {
   const reviewId = req.params.reviewId;
-  //console.log("jwjwjjfjafjf");
   const [review, reviewMeta] = await sequelize.query(
     `
         SELECT * FROM review

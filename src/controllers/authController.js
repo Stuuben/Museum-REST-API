@@ -6,7 +6,6 @@ const { QueryTypes } = require("sequelize");
 const { userRoles } = require("../constants/users");
 
 exports.register = async (req, res) => {
-  // SERVERSTATUUS 500 NÄR MAN SKRIVER SAMMA USER_NAME ELLER SAMMMA EMAIL // FRÅGA PETTER
   const { user_name, password, email } = req.body;
   console.log(req.body);
 
@@ -58,7 +57,13 @@ exports.login = async (req, res) => {
     userId: user.id,
     // @ts-ignore
     email: user.email,
-    role: userRoles.admin === user.role ? userRoles.admin : userRoles.user,
+    role: user.role,
+    /* userRoles.admin === user.role
+        ? userRoles.admin
+        : userRoles.user
+        
+        ? userRoles.owner 
+        : userRoles.owner,*/
   };
 
   const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET, {

@@ -93,7 +93,7 @@ const seedMuseumsDb = async () => {
     ("Trevlig personal, men svårt att parkera bilen.", 3, (SELECT id FROM user WHERE email = "user2@user.com" ), (SELECT id FROM museum WHERE name = "Disgusting Food Museum")),
     ("Väldigt Nordiskt! Hade velat ha lite mer från söder också ", 2, (SELECT id FROM user WHERE email = "user2@user.com" ), (SELECT id FROM museum WHERE name = "Nordiska museet")),
     ("Till alla flygfantaster rekommenderas Aeroseum varmt! Dom har till och med en JAS Gripen där!", 5, (SELECT id FROM user WHERE email = "user@user.com" ), (SELECT id FROM museum WHERE name = "Aeroseum")),
-    ("Sjuuukt häftigt!!!", 5, (SELECT id FROM user WHERE email = "user2@user.com" ), (SELECT id FROM museum WHERE name = "Aeroseum")),
+    ("Sjuuukt häftigt!!!", 2, (SELECT id FROM user WHERE email = "user2@user.com" ), (SELECT id FROM museum WHERE name = "Aeroseum")),
     ("Trodde de sålde kameror men ikket!", 1, (SELECT id FROM user WHERE email = "user@user.com" ), (SELECT id FROM museum WHERE name = "Fotografiska"))
     `);
 

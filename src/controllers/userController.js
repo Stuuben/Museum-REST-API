@@ -29,7 +29,8 @@ exports.deleteUserById = async (req, res) => {
   const [review, reviewMeta] = await sequelize.query(
     `
         SELECT * FROM review
-        WHERE review.fk_user_id = $userId  
+        WHERE review.fk_user_id = $userId
+        
         `,
     {
       bind: { userId: userId },

@@ -8,6 +8,5 @@ exports.notFoundMiddleware = (req, res, next) => {
     throw new NotFoundError("This endpoint does not exist...");
   } else {
     return res.status(404);
-    // .sendFile(path.join(__dirname, "..", "views", "notFound.html"));
   }
 };

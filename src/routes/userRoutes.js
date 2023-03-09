@@ -23,11 +23,6 @@ router.get(
   authorizeRoles(userRoles.admin),
   getUserById
 );
-router.delete(
-  "/users/:userId",
-  isAuthenticated,
-  // authorizeRoles(userRoles.admin),
-  deleteUserById
-);
+router.delete("/users/:userId", isAuthenticated, deleteUserById);
 
 module.exports = router;

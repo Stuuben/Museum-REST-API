@@ -4,8 +4,6 @@ const { sequelize } = require("../database/config");
 const { UnauthorizedError, NotFoundError } = require("../utils/error");
 
 exports.getAllMuseums = async (req, res) => {
-  // VAD ÄR QUERY / OPTIONS / METADATA ?? fråga petter
-
   let city = req.query.city;
   let limit = req.query.limit || 10;
 
@@ -16,7 +14,6 @@ exports.getAllMuseums = async (req, res) => {
     );
     return res.json(museums);
   }
-  // console.log(city);
   const [results, resultData] = await sequelize.query(
     `
     SELECT  m.id, m.name, m.address, m.zipcode, m.fee, fk_city_id, c.name AS city
@@ -146,6 +143,7 @@ exports.deleteMuseumById = async (req, res) => {
   );
   if (
     req.user.role == userRoles.admin ||
+    req.user.role == userRoles.owner ||
     req.user.userId == review.fk_user_id
   ) {
     await sequelize.query(
@@ -160,7 +158,6 @@ exports.deleteMuseumById = async (req, res) => {
         types: QueryTypes.DELETE,
       }
     );
-    //    return res.sendStatus(204);
   }
   const [museum, museumMeta] = await sequelize.query(
     `
@@ -172,7 +169,11 @@ exports.deleteMuseumById = async (req, res) => {
       type: QueryTypes.SELECT,
     }
   );
-  if (req.user.role == userRoles.admin || req.user.userId == review.fk_user_id)
+  if (
+    req.user.role == userRoles.admin ||
+    req.user.role == userRoles.owner ||
+    req.user.userId == review.fk_user_id
+  )
     if (!museum) {
       throw new NotFoundError("This museum does not exist.");
     }

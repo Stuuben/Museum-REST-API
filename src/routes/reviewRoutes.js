@@ -17,11 +17,6 @@ router.get("/reviews", isAuthenticated, getAllReviews);
 router.get("/reviews/user/:userId", isAuthenticated, getReviewsByUserId);
 router.get("/reviews/museum/:museumId", isAuthenticated, getReviewsByMuseum);
 router.post("/reviews", isAuthenticated, createNewReview);
-router.delete(
-  "/reviews/:reviewId",
-  isAuthenticated,
-  // authorizeRoles(userRoles.admin),
-  deleteReviewById
-);
+router.delete("/reviews/:reviewId", isAuthenticated, deleteReviewById);
 
 module.exports = router;
